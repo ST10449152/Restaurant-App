@@ -161,7 +161,42 @@ export default function App() {
     </View>
   );
 
-  
+  const renderAddItemScreen = () => (
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>ADD MENU ITEM</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Name"
+          onChangeText={setMName}
+          value={mName}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Description"
+          onChangeText={setMDescription}
+          value={mDescription}
+          multiline={true}
+          style={styles.inputDescr}
+        />
+        <TextInput
+          placeholder="Price"
+          onChangeText={setMPrice}
+          value={mPrice}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        <Picker
+          onValueChange={(itemValue) => setMCourse(itemValue)}
+          selectedValue={mCourse}
+          style={styles.picker}>
+          <Picker.Item label="Courses" value="" /> {/* Placeholder */}
+          {courseList.map((item) => (
+            <Picker.Item label={item.name} value={item.name} key={item.id} />
+          ))}
+        </Picker>
+      </View>
 };
 
 const styles = StyleSheet.create({
