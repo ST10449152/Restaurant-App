@@ -85,6 +85,69 @@ export default function App() {
       course: mCourse,
     };
 
+    const updatedMenuList = [...menuList, newMenuItem];
+    setMenuList(updatedMenuList);
+    setTotal(updatedMenuList.length);
+
+    Alert.alert('Success', 'Menu item added successfully');
+
+    // Clear fields and switch back to the menu screen
+    setMName('');
+    setMDescription('');
+    setMPrice('');
+    setMCourse('');
+    setIsAdding(false);
+  };
+
+  const handleLogin = () => {
+    if (username === 'CHEF CHRISTOFFEL') {
+      setIsLoggedIn(true);
+    } else {
+      Alert.alert('Error', 'Incorrect username. Please try again.');
+    }
+  };
+
+  const renderLoginScreen = () => (
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>LOGIN</Text>
+      </View>
+      <TextInput
+        placeholder="Username"
+        onChangeText={setUsername}
+        value={username}
+        style={styles.input}
+      />
+      <TouchableOpacity onPress={handleLogin} style={styles.button}>
+        <Text style={styles.buttonText}>LOGIN</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderMenuScreen = () => (
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Christoffel's Culinary Dishes</Text>
+      </View>
+      <View style={styles.statsContainer}>
+        <View style={styles.totalContainer}>
+          <Text style={styles.statsText}>TOTAL ITEMS</Text>
+          <Text style={styles.statsNumber}>{total}</Text>
+        </View>
+      </View>
+      <FlatList
+        data={menuList}
+        renderItem={({ item }) => (
+          <MenuItem
+            name={item.name}
+            description={item.description}
+            price={item.price}
+            course={item.course}
+          />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        ListEmptyComponent={<Text style={styles.emptyMessage}>Empty Menu</Text>}
+      />
 };
 
 const styles = StyleSheet.create({
