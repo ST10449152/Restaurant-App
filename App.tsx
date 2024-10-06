@@ -148,6 +148,20 @@ export default function App() {
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={<Text style={styles.emptyMessage}>Empty Menu</Text>}
       />
+            <TouchableOpacity onPress={() => setIsAdding(true)} style={styles.button}>
+        <Text style={styles.buttonText}>ADD MENU ITEM</Text>
+      </TouchableOpacity>
+      {/* Dummy buttons for different clients */}
+      <TouchableOpacity disabled style={styles.disabledButton}>
+        <Text style={styles.buttonText}>CLIENT 1</Text>
+      </TouchableOpacity>
+      <TouchableOpacity disabled style={styles.disabledButton}>
+        <Text style={styles.buttonText}>CLIENT 2</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  
 };
 
 const styles = StyleSheet.create({
