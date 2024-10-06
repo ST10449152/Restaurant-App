@@ -64,7 +64,28 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   
-}
+  let [fontsLoaded] = useFonts({
+    Montserrat_400Regular,
+    Montserrat_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return null; 
+  }
+
+  const handleSaveMenuItem = () => {
+    if (!mName || !mDescription || isNaN(parseFloat(mPrice)) || !mCourse) {
+      Alert.alert('Error', 'Please fill out all fields correctly.');
+      return;
+    }
+    const newMenuItem = {
+      name: mName,
+      description: mDescription,
+      price: parseFloat(mPrice),
+      course: mCourse,
+    };
+
+};
 
 const styles = StyleSheet.create({
   container: {
