@@ -197,7 +197,16 @@ export default function App() {
           ))}
         </Picker>
       </View>
-};
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleSaveMenuItem} style={styles.button}>
+          <Text style={styles.buttonText}>SAVE</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsAdding(false)} style={styles.button}>
+          <Text style={styles.buttonText}>BACK TO MENU</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
 const styles = StyleSheet.create({
   container: {
