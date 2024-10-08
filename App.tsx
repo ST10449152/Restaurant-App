@@ -16,12 +16,7 @@ import {
   Montserrat_700Bold,
 } from '@expo-google-fonts/montserrat';
 
-interface Course {
-  id: number;
-  name: string;
-}
-
-// Define the type for MenuItem's props
+// Define the type for the MenuItem's props
 interface MenuItemProps {
   name: string;
   description: string;
@@ -29,22 +24,29 @@ interface MenuItemProps {
   course: string;
 }
 
+// Define the type for the course
+interface Course {
+  id: number;
+  name: string;
+}
+
+// Updated courseList with valid course names
 const courseList: Course[] = [
-  { id: 1, name: 'Hors D Oeuvre' },
-  { id: 2, name: 'Amuse-Bouche' },
-  { id: 3, name: 'Soup' },
-  { id: 4, name: 'Salad' },
-  { id: 5, name: 'Appetiser' },
-  { id: 6, name: 'Fish' },
-  { id: 7, name: 'Main Course' },
-  { id: 8, name: 'Palate Cleanser' },
-  { id: 9, name: 'Second Main Course' },
-  { id: 10, name: 'Cheese' },
-  { id: 11, name: 'Dessert' },
-  { id: 12, name: 'Mignardise' },
+  { id: 1, name: 'hors d oeuvre' },
+  { id: 2, name: 'amuse-bouche' },
+  { id: 3, name: 'soup' },
+  { id: 4, name: 'appetizer' },
+  { id: 5, name: 'salad' },
+  { id: 6, name: 'fish' },
+  { id: 7, name: 'first main course' },
+  { id: 8, name: 'palate cleanser' },
+  { id: 9, name: 'second main course' },
+  { id: 10, name: 'cheese course' },
+  { id: 11, name: 'dessert' },
+  { id: 12, name: 'mignardise' },
 ];
 
-const MenuItem: React.FC<MenuItemProps> = ({ name, description, price, course }) => (
+const MenuItem = ({ name, description, price, course }: MenuItemProps) => (
   <View style={styles.menuContainer}>
     <Text style={styles.menuName}>{name}</Text>
     <Text style={styles.menuDescription}>{description}</Text>
@@ -57,13 +59,13 @@ export default function App() {
   const [mName, setMName] = useState('');
   const [mDescription, setMDescription] = useState('');
   const [mPrice, setMPrice] = useState('');
-  const [mCourse, setMCourse] = useState('');
-  const [menuList, setMenuList] = useState([]);
+  const [mCourse, setMCourse] = useState(''); // Properly initialized state
+  const [menuList, setMenuList] = useState<MenuItemProps[]>([]);
   const [total, setTotal] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
-  
+
   let [fontsLoaded] = useFonts({
     Montserrat_400Regular,
     Montserrat_700Bold,
@@ -148,7 +150,7 @@ export default function App() {
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={<Text style={styles.emptyMessage}>Empty Menu</Text>}
       />
-            <TouchableOpacity onPress={() => setIsAdding(true)} style={styles.button}>
+      <TouchableOpacity onPress={() => setIsAdding(true)} style={styles.button}>
         <Text style={styles.buttonText}>ADD MENU ITEM</Text>
       </TouchableOpacity>
       {/* Dummy buttons for different clients */}
@@ -188,10 +190,10 @@ export default function App() {
           style={styles.input}
         />
         <Picker
+          selectedValue={mCourse || ""} // Ensured selectedValue is valid
           onValueChange={(itemValue) => setMCourse(itemValue)}
-          selectedValue={mCourse}
           style={styles.picker}>
-          <Picker.Item label="Courses" value="" /> {/* Placeholder */}
+          <Picker.Item label="Select a Course" value="" /> {/* Placeholder */}
           {courseList.map((item) => (
             <Picker.Item label={item.name} value={item.name} key={item.id} />
           ))}
@@ -207,6 +209,9 @@ export default function App() {
       </View>
     </View>
   );
+
+  return isLoggedIn ? (isAdding ? renderAddItemScreen() : renderMenuScreen()) : renderLoginScreen();
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -268,68 +273,68 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat_400Regular',
   },
   menuCourse: {
-    fontSize: 16,
-    color: '#f1f1f1',
-    fontFamily: 'Montserrat_400Regular',
-  },
-  emptyMessage: {
-    textAlign: 'center',
-    fontSize: 18,
-    color: '#888',
-    marginTop: 20,
+    fontSize: 14,
+    color: '#ffffff',
     fontFamily: 'Montserrat_400Regular',
   },
   inputContainer: {
-    marginBottom: 25,
+    marginBottom: 20,
   },
   input: {
-    backgroundColor: '#fff',
-    color: '#1e1e2e',
-    padding: 12,
-    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ffd700',
+    borderRadius: 10,
+    padding: 10,
     marginBottom: 15,
+    color: '#f1f1f1',
     fontFamily: 'Montserrat_400Regular',
   },
   inputDescr: {
-    backgroundColor: '#fff',
-    color: '#1e1e2e',
-    padding: 12,
-    borderRadius: 8,
+    height: 60,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: '#ffd700',
+    borderRadius: 10,
+    padding: 10,
     marginBottom: 15,
-    height: 100,
+    color: '#f1f1f1',
     fontFamily: 'Montserrat_400Regular',
   },
   picker: {
-    backgroundColor: '#fff',
-    color: '#1e1e2e',
-    borderRadius: 8,
-    marginBottom: 15,
     height: 50,
-    fontFamily: 'Montserrat_400Regular',
+    color: '#f1f1f1',
+    borderColor: '#ffd700',
   },
   buttonContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   button: {
-    backgroundColor: '#4a4a8c',
-    borderRadius: 25,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    backgroundColor: '#ffd700',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
     marginBottom: 10,
   },
   disabledButton: {
-    backgroundColor: '#888',
-    borderRadius: 25,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    marginBottom: 10,
+    backgroundColor: '#707070',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 10,
   },
   buttonText: {
     fontSize: 18,
-    color: '#fff',
-    textAlign: 'center',
     fontFamily: 'Montserrat_700Bold',
+    color: '#1e1e2e',
+  },
+  emptyMessage: {
+    color: '#f1f1f1',
+    textAlign: 'center',
+    fontSize: 18,
+    marginTop: 20,
+    fontFamily: 'Montserrat_400Regular',
   },
 });
