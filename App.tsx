@@ -30,7 +30,6 @@ interface Course {
   name: string;
 }
 
-// Updated courseList with valid course names
 const courseList: Course[] = [
   { id: 1, name: 'hors d oeuvre' },
   { id: 2, name: 'amuse-bouche' },
@@ -59,12 +58,10 @@ export default function App() {
   const [mName, setMName] = useState('');
   const [mDescription, setMDescription] = useState('');
   const [mPrice, setMPrice] = useState('');
-  const [mCourse, setMCourse] = useState(''); // Properly initialized state
+  const [mCourse, setMCourse] = useState('');
   const [menuList, setMenuList] = useState<MenuItemProps[]>([]);
   const [total, setTotal] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
 
   let [fontsLoaded] = useFonts({
     Montserrat_400Regular,
@@ -93,7 +90,6 @@ export default function App() {
 
     Alert.alert('Success', 'Menu item added successfully');
 
-    // Clear fields and switch back to the menu screen
     setMName('');
     setMDescription('');
     setMPrice('');
@@ -101,30 +97,24 @@ export default function App() {
     setIsAdding(false);
   };
 
-  const handleLogin = () => {
-    if (username === 'CHEF CHRISTOFFEL') {
-      setIsLoggedIn(true);
-    } else {
-      Alert.alert('Error', 'Incorrect username. Please try again.');
-    }
-  };
+  const calculateAveragePriceByCourse = () => {
+    const pricesByCourse: { [key: string]: number[] } = {};
 
-  const renderLoginScreen = () => (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>LOGIN</Text>
-      </View>
-      <TextInput
-        placeholder="Username"
-        onChangeText={setUsername}
-        value={username}
-        style={styles.input}
-      />
-      <TouchableOpacity onPress={handleLogin} style={styles.button}>
-        <Text style={styles.buttonText}>LOGIN</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    menuList.forEach((item) => {
+      if (!pricesByCourse[item.course]) {
+        pricesByCourse[item.course] = [];
+      }
+      pricesByCourse[item.course].push(item.price);
+    });
+
+    const averages = Object.keys(pricesByCourse).map((course) => {
+      const total = pricesByCourse[course].reduce((sum, price) => sum + price, 0);
+      const avg = (total / pricesByCourse[course].length).toFixed(2);
+      return `${course}: R${avg}`;
+    });
+
+    return averages.length > 0 ? averages.join('\n') : 'No menu items yet.';
+  };
 
   const renderMenuScreen = () => (
     <View style={styles.container}>
@@ -135,6 +125,10 @@ export default function App() {
         <View style={styles.totalContainer}>
           <Text style={styles.statsText}>TOTAL ITEMS</Text>
           <Text style={styles.statsNumber}>{total}</Text>
+        </View>
+        <View style={styles.totalContainer}>
+          <Text style={styles.statsText}>AVERAGE PRICE BY COURSE</Text>
+          <Text style={styles.statsNumber}>{calculateAveragePriceByCourse()}</Text>
         </View>
       </View>
       <FlatList
@@ -152,13 +146,6 @@ export default function App() {
       />
       <TouchableOpacity onPress={() => setIsAdding(true)} style={styles.button}>
         <Text style={styles.buttonText}>ADD MENU ITEM</Text>
-      </TouchableOpacity>
-      {/* Dummy buttons for different clients */}
-      <TouchableOpacity disabled style={styles.disabledButton}>
-        <Text style={styles.buttonText}>CLIENT 1</Text>
-      </TouchableOpacity>
-      <TouchableOpacity disabled style={styles.disabledButton}>
-        <Text style={styles.buttonText}>CLIENT 2</Text>
       </TouchableOpacity>
     </View>
   );
@@ -190,10 +177,10 @@ export default function App() {
           style={styles.input}
         />
         <Picker
-          selectedValue={mCourse || ""} // Ensured selectedValue is valid
+          selectedValue={mCourse || ""}
           onValueChange={(itemValue) => setMCourse(itemValue)}
           style={styles.picker}>
-          <Picker.Item label="Select a Course" value="" /> {/* Placeholder */}
+          <Picker.Item label="Select a Course" value="" />
           {courseList.map((item) => (
             <Picker.Item label={item.name} value={item.name} key={item.id} />
           ))}
@@ -210,7 +197,7 @@ export default function App() {
     </View>
   );
 
-  return isLoggedIn ? (isAdding ? renderAddItemScreen() : renderMenuScreen()) : renderLoginScreen();
+  return (isAdding ? renderAddItemScreen() : renderMenuScreen());
 }
 
 const styles = StyleSheet.create({
@@ -233,11 +220,13 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between', // Ensures even spacing between items
     marginBottom: 25,
+    paddingHorizontal: 10, // Added padding for spacing within the container
   },
   totalContainer: {
     alignItems: 'center',
+    flex: 1, // Ensures each child takes equal space
   },
   statsText: {
     fontSize: 18,
@@ -311,19 +300,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#ffd700',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 10,
-  },
-  disabledButton: {
-    backgroundColor: '#707070',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 10,
+    marginVertical: 10,
   },
   buttonText: {
     fontSize: 18,
